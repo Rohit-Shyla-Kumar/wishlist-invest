@@ -7,7 +7,7 @@
 const HORIZONS = [5, 10, 25, 50];
 
 const INVESTMENTS = [
-  { id: "tsla + spcx", label: "Tesla Inc (~35% / yr)", rate: 0.35 },
+  { id: "tslaspcx", label: "Tesla + SpaceXai (~25% / yr)", rate: 0.25 },
   { id: "sp500", label: "S&P 500 index (~12% / yr)", rate: 0.12 },
   { id: "growth-etf", label: "Growth / tech ETF (~15% / yr)", rate: 0.15 },
   { id: "reit", label: "Real estate REIT (~10% / yr)", rate: 0.10 },
