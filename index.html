@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="See what your wishlist purchases could be worth if invested instead.">
+  <meta name="theme-color" content="#3d5a80">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <title>Wishlist → Wealth | Impulse Invest Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__inner">
+      <p class="hero__eyebrow">Wishlist → Wealth</p>
+      <h1>What if you invested instead?</h1>
+      <p class="hero__lead">
+        Add the things you’re tempted to buy. See how that money could grow over time
+        if you waited and invested it instead — no judgment, just clarity.
+      </p>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel panel--form" aria-labelledby="form-heading">
+      <h2 id="form-heading">Add a wishlist item</h2>
+      <form id="item-form" class="item-form" novalidate>
+        <div class="field">
+          <label for="currency">Display currency</label>
+          <select id="currency" name="currency" aria-describedby="fx-hint"></select>
+          <span id="fx-hint" class="field-hint">Static illustrative exchange rates; amounts update when you change currency.</span>
+        </div>
+
+        <div class="field">
+          <label for="item-name">Item name</label>
+          <input type="text" id="item-name" name="name" placeholder="e.g. Noise-canceling headphones" required autocomplete="off">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="item-price" id="price-label">Price (SGD)</label>
+            <input type="number" id="item-price" name="price" min="0.01" step="0.01" placeholder="199.99" required>
+          </div>
+
+          <div class="field field--cooldown">
+            <label for="cooldown-value">Wait before buying</label>
+            <div class="cooldown-input">
+              <input type="number" id="cooldown-value" name="cooldown" min="1" value="7" required>
+              <select id="cooldown-unit" name="cooldownUnit" aria-label="Cooldown unit">
+                <option value="days">days</option>
+                <option value="weeks">weeks</option>
+                <option value="months">months</option>
+              </select>
+            </div>
+            <span class="field-hint">Give yourself time to decide</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="investment">If invested in…</label>
+          <select id="investment" name="investment" required></select>
+          <span class="field-hint field-hint--rates">Rates are illustrative annual assumptions, not guarantees.</span>
+        </div>
+
+        <button type="submit" class="btn btn--primary">Add to wishlist</button>
+      </form>
+    </section>
+
+    <section class="panel panel--results" aria-labelledby="results-heading">
+      <div class="results-header">
+        <h2 id="results-heading">Your wishlist projections</h2>
+        <p class="results-sub" id="results-count">No items yet — add one above.</p>
+      </div>
+
+      <div id="empty-state" class="empty-state">
+        <div class="empty-state__icon" aria-hidden="true">📈</div>
+        <p id="empty-state-text">Items you add will show projected value over several horizons.</p>
+      </div>
+
+      <ul id="item-list" class="item-list" hidden></ul>
+
+      <aside id="totals-card" class="totals-card" hidden aria-label="Portfolio totals">
+        <h3>Combined wishlist</h3>
+        <p class="totals-price" id="totals-price"></p>
+        <div id="totals-grid" class="totals-grid"></div>
+        <p class="totals-note">Totals assume each item’s chosen investment; mixed rates are summed for illustration.</p>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Educational tool only — not financial advice. Past performance does not predict future returns.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
