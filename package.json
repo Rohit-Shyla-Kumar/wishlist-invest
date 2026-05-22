@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "node server/index.js",
-    "dev": "node --watch server/index.js"
+    "dev": "node --watch server/index.js",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "engines": {
     "node": ">=18"
@@ -15,5 +17,8 @@
     "better-sqlite3": "^11.10.0",
     "express": "^4.21.2",
     "express-session": "^1.18.1"
+  },
+  "devDependencies": {
+    "wrangler": "^4.93.1"
   }
 }
