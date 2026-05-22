@@ -3,25 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="See what your wishlist purchases could be worth if invested instead.">
+  <meta name="description" content="Your wishlist investment dashboard">
   <meta name="theme-color" content="#3d5a80">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="format-detection" content="telephone=no">
-  <title>Wishlist → Wealth | Impulse Invest Calculator</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Dashboard · Wishlist → Wealth</title>
+  <link rel="stylesheet" href="/css/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="hero">
+  <nav class="top-nav">
+    <a class="top-nav__brand" href="/dashboard">Wishlist → Wealth</a>
+    <div class="top-nav__right">
+      <span class="top-nav__user" id="nav-username"></span>
+      <button type="button" class="btn btn--ghost btn--nav" id="logout-btn">Sign out</button>
+    </div>
+  </nav>
+
+  <header class="hero hero--slim">
     <div class="hero__inner">
-      <p class="hero__eyebrow">Wishlist → Wealth</p>
-      <h1>What if you invested instead?</h1>
-      <p class="hero__lead">
-        Add the things you’re tempted to buy. See how that money could grow over time
-        if you waited and invested it instead — no judgment, just clarity.
-      </p>
+      <h1>Your wishlist</h1>
+      <p class="hero__lead">Prices stay in the currency you added them; switch display currency anytime. When the timer ends, extend, buy, or remove.</p>
     </div>
   </header>
 
@@ -32,11 +36,18 @@
         <div class="field">
           <label for="currency">Display currency</label>
           <select id="currency" name="currency" aria-describedby="fx-hint"></select>
+          <span id="fx-hint" class="field-hint">Static illustrative FX. New items use this currency. Stored amounts keep their original currency.</span>
         </div>
 
         <div class="field">
           <label for="item-name">Item name</label>
           <input type="text" id="item-name" name="name" placeholder="e.g. Noise-canceling headphones" required autocomplete="off">
+        </div>
+
+        <div class="field">
+          <label for="item-link">Product link</label>
+          <input type="url" id="item-link" name="productUrl" placeholder="https://…" autocomplete="off">
+          <span class="field-hint">For future AI purchase or invest flows</span>
         </div>
 
         <div class="field-row">
@@ -55,13 +66,14 @@
                 <option value="months">months</option>
               </select>
             </div>
-            <span class="field-hint">Give yourself time to decide Queen</span>
+            <span class="field-hint">Countdown reminder when this ends</span>
           </div>
         </div>
 
         <div class="field">
           <label for="investment">If invested in…</label>
           <select id="investment" name="investment" required></select>
+          <span class="field-hint field-hint--rates">Illustrative annual rates — not guarantees.</span>
         </div>
 
         <button type="submit" class="btn btn--primary">Add to wishlist</button>
@@ -70,13 +82,13 @@
 
     <section class="panel panel--results" aria-labelledby="results-heading">
       <div class="results-header">
-        <h2 id="results-heading">Your wishlist projections</h2>
-        <p class="results-sub" id="results-count">No items yet — add one above.</p>
+        <h2 id="results-heading">Projections</h2>
+        <p class="results-sub" id="results-count">Loading…</p>
       </div>
 
-      <div id="empty-state" class="empty-state">
+      <div id="empty-state" class="empty-state" hidden>
         <div class="empty-state__icon" aria-hidden="true">📈</div>
-        <p id="empty-state-text">Items you add will show projected value over several horizons.</p>
+        <p id="empty-state-text"></p>
       </div>
 
       <ul id="item-list" class="item-list" hidden></ul>
@@ -85,15 +97,17 @@
         <h3>Combined wishlist</h3>
         <p class="totals-price" id="totals-price"></p>
         <div id="totals-grid" class="totals-grid"></div>
-        <p class="totals-note">Totals assume each item’s chosen investment; mixed rates are summed for illustration.</p>
+        <p class="totals-note">Totals convert each item from its stored currency. Mixed investment rates summed for illustration.</p>
       </aside>
     </section>
   </main>
 
+  <div id="toast" class="toast" hidden role="status"></div>
+
   <footer class="footer">
-    <p>Educational tool only — not financial advice. Past performance does not predict future returns.</p>
+    <p>Educational tool only — not financial advice. Future: AI purchase or auto-invest.</p>
   </footer>
 
-  <script src="app.js"></script>
+  <script type="module" src="/js/dashboard.js"></script>
 </body>
 </html>

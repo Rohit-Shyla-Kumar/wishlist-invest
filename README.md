@@ -1,104 +1,84 @@
 # Wishlist → Wealth
 
-A simple static calculator that shows how much your impulse or wishlist purchases could be worth if you invested the money instead.
+Wishlist calculator with **accounts**, **SQLite persistence**, consideration **countdowns**, and investment projections in **SGD / USD / GBP / HKD**.
 
-**Formula:** `future value = price × (1 + annual rate)^years` at 5, 10, and 25 years.
+**Formula:** `future value = price × (1 + annual rate)^years` at 5, 10, 25, and 50 years.
 
-Rates are illustrative assumptions only — not financial advice.
+Each item keeps the **price and currency from when it was added**. The dashboard converts to your chosen display currency using static illustrative FX rates.
 
-## Files
-
-| File | Purpose |
-|------|---------|
-| `index.html` | Page structure, form, results |
-| `styles.css` | Layout and styling (mobile-first, iPhone-safe) |
-| `app.js` | Wishlist logic and projections |
-
-## Run locally
-
-**Option A — open in browser (Windows)**
+## Quick start
 
 ```powershell
 cd C:\Users\rohit\source\repos\wishlist-invest
-start index.html
+copy .env.example .env
+npm install
+npm start
 ```
 
-**Option B — local server (recommended)**
+Open **http://localhost:3000** → create an account → add wishlist items.
 
-```powershell
-cd C:\Users\rohit\source\repos\wishlist-invest
-python -m http.server 8080
+| Page | URL |
+|------|-----|
+| Home | `/` |
+| Register | `/register` |
+| Sign in | `/login` |
+| Dashboard | `/dashboard` |
+
+## Features
+
+- **Sign up / sign in** — username + password (bcrypt hash + salt, 12 rounds)
+- **Wishlist items** — name, price, product link, cooldown, investment assumption
+- **Original currency** stored per item; display currency preference per user (default SGD)
+- **Live countdown** until consideration ends → extend, mark purchased, or remove
+- **Browser notifications** (optional) when a timer ends
+- **Projections** at 5 / 10 / 25 / 50 years with per-item and combined totals
+
+## Project layout
+
+```
+server/           Express API + SQLite
+  lib/finance.js  Shared rates & calculations
+  db.js           Schema (users, wishlist_items)
+public/           Static UI (HTML, CSS, JS)
+data/             SQLite database (gitignored)
 ```
 
-Then open `http://localhost:8080` on your PC, or `http://YOUR_PC_IP:8080` on your phone (same Wi‑Fi).
+## API (session cookie)
 
-## Deploy to Cloudflare Pages
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/auth/register` | Create account |
+| POST | `/api/auth/login` | Sign in |
+| POST | `/api/auth/logout` | Sign out |
+| GET | `/api/auth/me` | Current user |
+| PATCH | `/api/auth/preferences` | `{ displayCurrency }` |
+| GET | `/api/items` | List active wishlist items |
+| POST | `/api/items` | Add item |
+| POST | `/api/items/:id/extend` | Reset cooldown |
+| POST | `/api/items/:id/purchase` | Mark purchased |
+| DELETE | `/api/items/:id` | Remove from wishlist |
 
-This project is **static HTML** — no build step. Cloudflare serves the repo root as the site.
+## Environment
 
-### Prerequisites
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `PORT` | `3000` | HTTP port |
+| `SESSION_SECRET` | *(dev fallback)* | Session signing — **set in production** |
 
-- A [Cloudflare](https://dash.cloudflare.com/sign-up) account (free tier is fine)
-- Your code in **GitHub**, **GitLab**, or ready to upload as a folder
+## Deploy notes
 
-### Option 1 — Connect Git (recommended)
+This app needs a **Node.js host** (not static-only Pages). Options:
 
-1. Push this folder to a new GitHub repo (e.g. `wishlist-invest`).
-2. In Cloudflare Dashboard: **Workers & Pages → Create → Pages → Connect to Git**.
-3. Select the repo and branch (`main`).
-4. **Build settings:**
-   - **Framework preset:** None
-   - **Build command:** *(leave empty)*
-   - **Build output directory:** `/` or `.` (project root — where `index.html` lives)
-5. Click **Save and Deploy**.
+- [Railway](https://railway.app), [Render](https://render.com), [Fly.io](https://fly.io), or a VPS
+- Set `SESSION_SECRET` and `NODE_ENV=production`
+- Persist the `data/` volume so SQLite survives restarts
 
-After the first deploy, your site is live at `https://<project-name>.pages.dev`. You can add a custom domain under **Custom domains**.
+Cloudflare Pages alone cannot run this backend; use **Cloudflare Workers + D1** later if you want to stay on Cloudflare.
 
-### Option 2 — Direct Upload (no Git)
+## Future
 
-1. **Workers & Pages → Create → Pages → Upload assets**.
-2. Name the project (e.g. `wishlist-invest`).
-3. Drag in these files (same folder level): `index.html`, `styles.css`, `app.js`.
-4. Deploy.
+Product links are stored for a planned **AI agent** to purchase items or auto-invest when the user decides.
 
-Re-upload when you change files (or switch to Git later).
+## Disclaimer
 
-### Option 3 — Wrangler CLI (optional)
-
-```powershell
-npm install -g wrangler
-cd C:\Users\rohit\source\repos\wishlist-invest
-wrangler pages deploy . --project-name=wishlist-invest
-```
-
-Log in when prompted (`wrangler login`). Each deploy updates the same `*.pages.dev` URL.
-
-### Cloudflare settings checklist
-
-| Setting | Value |
-|---------|--------|
-| Build command | *(empty)* |
-| Build output directory | `.` (root) |
-| Node version | Not required |
-
-No `functions`, environment variables, or SSR needed.
-
-### Custom domain (optional)
-
-1. In your Pages project: **Custom domains → Set up a custom domain**.
-2. Follow the wizard to add a DNS record in Cloudflare (or your registrar).
-3. HTTPS is automatic.
-
-## Usage
-
-1. Enter an item name and price.
-2. Set a **wait before buying** period (days, weeks, or months).
-3. Pick an investment assumption from the dropdown.
-4. Click **Add to wishlist** — projections update immediately.
-5. Review per-item values and the combined totals card.
-
-Remove items with **Remove** on each card.
-
-## Mobile / iPhone
-
-The layout uses safe-area insets (notch/home indicator), 16px+ form fields (avoids iOS zoom-on-focus), and touch-friendly button sizes. Test on a real device via your deployed `*.pages.dev` URL or local server on the same network.
+Educational tool only — not financial advice. FX and return rates are illustrative assumptions.
